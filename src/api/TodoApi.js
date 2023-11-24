@@ -66,4 +66,43 @@ export class TodoApi {
             throw error
         }
     }
+
+    static async updateTodo(id, data) {
+        try {
+            const response = await axios.put(
+                `http://localhost:3200/todos/${id}`,
+                data,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                },
+            )
+
+            return response
+        } catch (error) {
+            console.error('Error adding todo:', error)
+            throw error
+        }
+    }
+
+    static async deleteTodo(id) {
+        try {
+            const response = await axios.delete(
+                `http://localhost:3200/todos/${id}`,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                },
+            )
+
+            return response
+        } catch (error) {
+            console.error('Error adding todo:', error)
+            throw error
+        }
+    }
 }

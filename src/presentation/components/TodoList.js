@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import TodoItem from './TodoItem'
 import { useDispatch, useSelector } from 'react-redux'
 import { setTodoList } from 'application/store/todos-slice'
+import { TodoService } from 'domain/todo/TodoService'
 
 const TodoList = () => {
     const dispatch = useDispatch()
@@ -45,7 +46,12 @@ const TodoList = () => {
         const updatedListTodos = listTodos.map((todo) =>
             todo.id === todoId ? { ...todo, completed: !todo.completed } : todo,
         )
+
+        const todo = listTodos.filter((todo) => todo.id === todoId)[0]
+        const newTodo = { ...todo, completed: !todo.completed }
+
         setListTodos(updatedListTodos)
+        TodoService.update(todoId, newTodo)
     }
 
     const handleTodoValues = (data) => {
@@ -66,8 +72,10 @@ const TodoList = () => {
     const uncompletedTodos = listTodos.filter(
         (todo) => todo.completed === false,
     )
-    const handleTodoDelete = (id) => {
-        console.log('id', id)
+    const handleTodoDelete = (todoId) => {
+        const newTodolist = listTodos.filter((todo) => todo.id !== todoId)
+        setListTodos(newTodolist)
+        TodoService.remove(todoId)
     }
 
     return (

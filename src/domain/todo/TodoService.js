@@ -21,8 +21,9 @@ export class TodoService {
     }
     static remove(id) {
         console.log('remove', id)
+        return TodoApi.deleteTodo(id)
     }
     static update(id, data) {
-        console.log('udpate', id, data)
+        return TodoApi.updateTodo(id, data)
     }
 }
