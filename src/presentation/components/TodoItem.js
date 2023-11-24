@@ -25,6 +25,7 @@ const TodoItem = (props) => {
             value: value,
         })
     }
+
     return (
         <div style={containerStyles(isLast)}>
             <div>
@@ -72,15 +73,22 @@ const TodoItem = (props) => {
                     <span style={dateStyle}>{date}</span> -
                     <div style={blockIconStyles}>
                         <Icon.Person />
-                        <span>{user.name}</span>
+                        <span>{user?.name}</span>
                     </div>
                 </div>
             </div>
+            {props.data.completed && (
+                <div style={trashIconStyles} onClick={() => props.delete(id)}>
+                    <Icon.Trash />
+                </div>
+            )}
         </div>
     )
 }
 export default TodoItem
-
+const trashIconStyles = {
+    cursor: 'pointer',
+}
 const containerStyles = (isLast) => ({
     position: 'relative',
     display: 'flex',

@@ -38,4 +38,32 @@ export class TodoApi {
             console.log(error)
         }
     }
+
+    static async addTodo(data) {
+        const values = {
+            title: data.title,
+            description: data.description,
+            userId: data.userId,
+            completed: data.completed || false,
+            date: data.date,
+        }
+
+        try {
+            const response = await axios.post(
+                'http://localhost:3200/todos',
+                values,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                },
+            )
+
+            return response
+        } catch (error) {
+            console.error('Error adding todo:', error)
+            throw error
+        }
+    }
 }

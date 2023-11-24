@@ -1,8 +1,11 @@
 import { TodoApi } from 'api/TodoApi'
 import React, { useEffect, useState } from 'react'
 import TodoItem from './TodoItem'
+import { useDispatch, useSelector } from 'react-redux'
+import { setTodoList } from 'application/store/todos-slice'
 
 const TodoList = () => {
+    const dispatch = useDispatch()
     const [listTodos, setListTodos] = useState([])
     const [listUsers, setListUsers] = useState([])
 
@@ -10,6 +13,7 @@ const TodoList = () => {
         try {
             const listTodos = await TodoApi.fetchTodos()
             setListTodos(listTodos)
+            dispatch(setTodoList(listTodos))
         } catch (error) {
             console.log(error)
         }
@@ -28,6 +32,14 @@ const TodoList = () => {
         fetchTodos()
         fetchUsers()
     }, [])
+
+    const todoList = useSelector((store) => store.TODO.data)
+
+    useEffect(() => {
+        if (todoList.length > 0) {
+            setListTodos(todoList)
+        }
+    }, [todoList])
 
     const handleTodoToggle = (todoId) => {
         const updatedListTodos = listTodos.map((todo) =>
@@ -54,6 +66,9 @@ const TodoList = () => {
     const uncompletedTodos = listTodos.filter(
         (todo) => todo.completed === false,
     )
+    const handleTodoDelete = (id) => {
+        console.log('id', id)
+    }
 
     return (
         <div>
@@ -70,6 +85,7 @@ const TodoList = () => {
                             key={todo.id}
                             data={todo}
                             state={handleTodoToggle}
+                            delete={handleTodoDelete}
                             user={getUserByTodo(todo.userId)}
                             isLast={
                                 index === uncompletedTodos.length - 1
@@ -102,6 +118,7 @@ const TodoList = () => {
                             data={todo}
                             state={handleTodoToggle}
                             user={getUserByTodo(todo.userId)}
+                            delete={handleTodoDelete}
                             isLast={
                                 index === completedTodos.length - 1
                                     ? true

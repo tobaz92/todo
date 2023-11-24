@@ -2,10 +2,38 @@ import React, { useState } from 'react'
 import * as Icon from 'react-bootstrap-icons'
 import { colors, boxShadow } from 'presentation/styles/variables'
 import { TodoService } from 'domain/todo/TodoService'
+import { useDispatch, useSelector } from 'react-redux'
+import { setTodoList } from 'application/store/todos-slice'
 
 const TodoAdd = (props) => {
-    const add = () => {
-        console.log('Add Task')
+    const dispatch = useDispatch()
+
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [date, setDate] = useState('')
+    const [users, setUsers] = useState([])
+
+    const todoList = useSelector((store) => store.TODO.data)
+
+    const add = async () => {
+        try {
+            const response = await TodoService.add({
+                title,
+                description,
+                date,
+                users,
+            })
+            if (response.status === 201) {
+                const responseData = response.data
+                const data = [...todoList]
+                data.push(responseData)
+                dispatch(setTodoList(data))
+            } else {
+                console.log(response)
+            }
+        } catch (error) {
+            console.error('Error adding todo:', error)
+        }
     }
 
     return (
@@ -16,6 +44,7 @@ const TodoAdd = (props) => {
                     id="name"
                     type="text"
                     placeholder="Task name here..."
+                    onChange={(e) => setTitle(e.target.value)}
                 />
             </div>
             <div>
@@ -23,6 +52,7 @@ const TodoAdd = (props) => {
                     style={descriptionStyles}
                     id="description"
                     placeholder="Description"
+                    onChange={(e) => setDescription(e.target.value)}
                 />
             </div>
             <div style={containerFooterActionsStyles}>
