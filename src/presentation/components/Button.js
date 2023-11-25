@@ -71,5 +71,5 @@ const alignStyle = {
     justifyContent: 'center',
     alignItems: 'center',
     gap: '0.5rem',
-    PointerEvent: 'none',
+    pointerEvents: 'none',
 }

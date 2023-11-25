@@ -92,6 +92,10 @@ const TodoList = (props) => {
                                     : false
                             }
                             newValue={handleTodoValues}
+                            updateVisible={(type) => {
+                                props.updateVisible()
+                                props.updateType(type)
+                            }}
                         />
                     ))}
                 </div>
@@ -129,8 +133,11 @@ const TodoList = (props) => {
                 </div>
             )}
             <div
-                onClick={() => props.addVisible()}
-                style={addStyles(props.addIsVisible)}
+                onClick={() => {
+                    props.updateVisible()
+                    props.updateType({ type: 'add' })
+                }}
+                style={addStyles(props.updateIsVisible)}
             >
                 <PlusCircle />
             </div>

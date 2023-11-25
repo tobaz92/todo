@@ -78,15 +78,23 @@ const TodoItem = (props) => {
                 </div>
             </div>
             {props.data.completed && (
-                <div style={trashIconStyles} onClick={() => props.delete(id)}>
+                <div style={iconStyles} onClick={() => props.delete(id)}>
                     <Icon.Trash />
+                </div>
+            )}
+            {!props.data.completed && (
+                <div
+                    style={iconStyles}
+                    onClick={() => props.updateVisible({ type: 'update', id })}
+                >
+                    <Icon.Pencil />
                 </div>
             )}
         </div>
     )
 }
 export default TodoItem
-const trashIconStyles = {
+const iconStyles = {
     cursor: 'pointer',
 }
 const containerStyles = (isLast) => ({

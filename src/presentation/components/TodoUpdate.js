@@ -5,30 +5,32 @@ import { colors, boxShadow } from 'presentation/styles/variables'
 import { Button } from './Button'
 import * as Icon from 'react-bootstrap-icons'
 
-const TodoAdd = (props) => {
+const TodoUpdate = (props) => {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
     const [users, setUsers] = useState([])
     const dispatch = useDispatch()
-
+    console.log(props)
     return (
         <div style={containerStyles}>
             <div>
                 <input
-                    style={nameStyles}
+                    style={inputStyles}
                     id="name"
                     type="text"
                     placeholder="Task name here..."
                     onChange={(e) => setTitle(e.target.value)}
+                    value={title}
                 />
             </div>
             <div>
                 <textarea
-                    style={descriptionStyles}
+                    style={inputStyles}
                     id="description"
                     placeholder="Description"
                     onChange={(e) => setDescription(e.target.value)}
+                    value={description}
                 />
             </div>
             <div style={containerFooterActionsStyles}>
@@ -64,7 +66,7 @@ const TodoAdd = (props) => {
                 </div>
                 <div style={containerButtonsStyle}>
                     <div>
-                        <Button onClick={() => props.addVisible()}>
+                        <Button onClick={() => props.updateVisible()}>
                             Cancel
                         </Button>
                     </div>
@@ -72,6 +74,8 @@ const TodoAdd = (props) => {
                         <Button
                             primary={true}
                             onClick={() => {
+                                setTitle('')
+                                setDescription('')
                                 addTodo({
                                     title,
                                     description,
@@ -81,7 +85,7 @@ const TodoAdd = (props) => {
                                 })
                             }}
                         >
-                            Add Task
+                            {props.type.type === 'add' ? 'Add Task' : 'Update'}
                         </Button>
                     </div>
                 </div>
@@ -90,7 +94,7 @@ const TodoAdd = (props) => {
     )
 }
 
-export default TodoAdd
+export default TodoUpdate
 
 const containerStyles = {
     position: 'absolute',
@@ -112,12 +116,11 @@ const containerButtonsStyle = {
     flexDirection: 'row',
     gap: '0.8rem',
 }
-const nameStyles = {
+const inputStyles = {
     width: '100%',
-}
-
-const descriptionStyles = {
-    width: '100%',
+    border: 'none',
+    padding: '0.5rem ',
+    resize: 'none',
 }
 
 const containerFooterActionsStyles = {

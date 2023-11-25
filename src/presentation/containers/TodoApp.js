@@ -1,23 +1,31 @@
-import TodoAdd from 'presentation/components/TodoAdd'
+import TodoUpdate from 'presentation/components/TodoUpdate'
 import TodoList from 'presentation/components/TodoList'
 
 import React, { useState } from 'react'
 import { colors, boxShadow } from 'presentation/styles/variables'
 
 const TodoApp = () => {
-    const [addVisible, setAddVisible] = useState(false)
-
-    const handleAddVisibleToogle = () => {
-        setAddVisible(!addVisible)
+    const [updateVisible, setupdateVisible] = useState(false)
+    const [updateType, setUpdateType] = useState({ type: 'add', id: null })
+    const handleUpdateVisibleToogle = () => {
+        setupdateVisible(!updateVisible)
     }
-
+    const changeTypeUpdate = (type, id) => {
+        setUpdateType(type)
+    }
     return (
         <div style={containerStyles}>
             <TodoList
-                addVisible={handleAddVisibleToogle}
-                addIsVisible={addVisible}
+                updateVisible={handleUpdateVisibleToogle}
+                updateIsVisible={updateVisible}
+                updateType={changeTypeUpdate}
             />
-            {addVisible && <TodoAdd addVisible={handleAddVisibleToogle} />}
+            {updateVisible && (
+                <TodoUpdate
+                    updateVisible={handleUpdateVisibleToogle}
+                    type={updateType}
+                />
+            )}
         </div>
     )
 }
