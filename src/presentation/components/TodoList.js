@@ -2,24 +2,17 @@ import { TodoApi } from 'api/TodoApi'
 import React, { useEffect, useState } from 'react'
 import TodoItem from './TodoItem'
 import { useDispatch, useSelector } from 'react-redux'
-import { setTodoList } from 'application/store/todos-slice'
-import { TodoService } from 'domain/todo/TodoService'
+import { getTodos, removeTodo, updateTodo } from 'domain/todo/TodoService'
+import { PlusCircle } from 'react-bootstrap-icons'
 
-const TodoList = () => {
-    const dispatch = useDispatch()
+const TodoList = (props) => {
     const [listTodos, setListTodos] = useState([])
     const [listUsers, setListUsers] = useState([])
+    const dispatch = useDispatch()
 
-    async function fetchTodos() {
-        try {
-            const listTodos = await TodoApi.fetchTodos()
-            setListTodos(listTodos)
-            dispatch(setTodoList(listTodos))
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    const todoList = useSelector((store) => store.TODO.data)
 
+    // TODO: in progress : move to UserService.js
     async function fetchUsers() {
         try {
             const listUsers = await TodoApi.fetchUsers()
@@ -30,11 +23,9 @@ const TodoList = () => {
     }
 
     useEffect(() => {
-        fetchTodos()
+        getTodos(dispatch)
         fetchUsers()
     }, [])
-
-    const todoList = useSelector((store) => store.TODO.data)
 
     useEffect(() => {
         if (todoList.length > 0) {
@@ -51,7 +42,7 @@ const TodoList = () => {
         const newTodo = { ...todo, completed: !todo.completed }
 
         setListTodos(updatedListTodos)
-        TodoService.update(todoId, newTodo)
+        updateTodo(todoId, newTodo)
     }
 
     const handleTodoValues = (data) => {
@@ -75,7 +66,7 @@ const TodoList = () => {
     const handleTodoDelete = (todoId) => {
         const newTodolist = listTodos.filter((todo) => todo.id !== todoId)
         setListTodos(newTodolist)
-        TodoService.remove(todoId)
+        removeTodo(todoId)
     }
 
     return (
@@ -137,6 +128,12 @@ const TodoList = () => {
                     ))}
                 </div>
             )}
+            <div
+                onClick={() => props.addVisible()}
+                style={addStyles(props.addIsVisible)}
+            >
+                <PlusCircle />
+            </div>
         </div>
     )
 }
@@ -159,3 +156,14 @@ const counterStyles = {
 const completedStyles = {
     opacity: '0.4',
 }
+const addStyles = (hidden) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.5rem',
+    padding: '1rem',
+    paddingBottom: '0',
+    cursor: 'pointer',
+    opacity: hidden ? '0' : '1',
+    pointerEvents: hidden ? 'none' : 'auto',
+})

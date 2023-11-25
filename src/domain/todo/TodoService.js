@@ -1,29 +1,44 @@
 import { TodoApi } from 'api/TodoApi'
-export class TodoService {
-    static getAll() {
-        return TodoApi.fetchTodos()
+import { setTodoList, addTodoList } from 'application/store/todos-slice'
+
+export const addTodo = async (data) => {
+    // DEV
+    const userId = data?.userId ?? 1
+    const completed = false
+    const date = '2023-11-23'
+
+    const values = {
+        title: data?.title,
+        description: data?.description,
+        userId,
+        date,
+        completed,
     }
-    static get(id) {}
 
-    static add(data) {
-        const userId = 1
-        const completed = false
-        const date = '2023-11-23'
-
-        const values = {
-            title: data.title,
-            description: data.description,
-            userId,
-            date,
-            completed,
+    try {
+        const response = await TodoApi.addTodo(values)
+        if (response.status === 201) {
+            const responseData = response.data
+            data.dispatch(addTodoList(responseData))
+        } else {
+            console.log(response)
         }
-        return TodoApi.addTodo(values)
+    } catch (error) {
+        console.error('Error adding todo:', error)
     }
-    static remove(id) {
-        console.log('remove', id)
-        return TodoApi.deleteTodo(id)
-    }
-    static update(id, data) {
-        return TodoApi.updateTodo(id, data)
+}
+
+export const removeTodo = (id) => {
+    return TodoApi.deleteTodo(id)
+}
+export const updateTodo = (id, data) => {
+    return TodoApi.updateTodo(id, data)
+}
+export const getTodos = async (dispatch) => {
+    try {
+        const listTodos = await TodoApi.fetchTodos()
+        dispatch(setTodoList(listTodos))
+    } catch (error) {
+        console.log(error)
     }
 }

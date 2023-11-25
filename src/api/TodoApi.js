@@ -19,7 +19,7 @@ export class TodoApi {
             console.log(error)
         }
     }
-
+    // TODO: In progress, move to UserApi.js
     static async fetchUsers() {
         try {
             const config = {

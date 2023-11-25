@@ -1,40 +1,16 @@
 import React, { useState } from 'react'
-import * as Icon from 'react-bootstrap-icons'
+import { useDispatch } from 'react-redux'
+import { addTodo } from 'domain/todo/TodoService'
 import { colors, boxShadow } from 'presentation/styles/variables'
-import { TodoService } from 'domain/todo/TodoService'
-import { useDispatch, useSelector } from 'react-redux'
-import { setTodoList } from 'application/store/todos-slice'
+import { Button } from './Button'
+import * as Icon from 'react-bootstrap-icons'
 
 const TodoAdd = (props) => {
-    const dispatch = useDispatch()
-
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
     const [users, setUsers] = useState([])
-
-    const todoList = useSelector((store) => store.TODO.data)
-
-    const add = async () => {
-        try {
-            const response = await TodoService.add({
-                title,
-                description,
-                date,
-                users,
-            })
-            if (response.status === 201) {
-                const responseData = response.data
-                const data = [...todoList]
-                data.push(responseData)
-                dispatch(setTodoList(data))
-            } else {
-                console.log(response)
-            }
-        } catch (error) {
-            console.error('Error adding todo:', error)
-        }
-    }
+    const dispatch = useDispatch()
 
     return (
         <div style={containerStyles}>
@@ -63,13 +39,13 @@ const TodoAdd = (props) => {
                             type="date"
                             style={{ display: 'none' }}
                         />
-                        <CustomButton
+                        <Button
                             onClick={() => {
                                 console.log('Due Date')
                             }}
                         >
                             <Icon.Calendar4Event /> <span>Due Date</span>
-                        </CustomButton>
+                        </Button>
                     </div>
                     <div>
                         <input
@@ -77,29 +53,36 @@ const TodoAdd = (props) => {
                             type="text"
                             style={{ display: 'none' }}
                         />
-                        <CustomButton
+                        <Button
                             onClick={() => {
                                 console.log('Assign To')
                             }}
                         >
                             <Icon.Person /> <span>Assign To</span>
-                        </CustomButton>
+                        </Button>
                     </div>
                 </div>
                 <div style={containerButtonsStyle}>
                     <div>
-                        <CustomButton
-                            onClick={() => {
-                                console.log('Cancel')
-                            }}
-                        >
+                        <Button onClick={() => props.addVisible()}>
                             Cancel
-                        </CustomButton>
+                        </Button>
                     </div>
                     <div>
-                        <CustomButton primary={true} onClick={() => add()}>
+                        <Button
+                            primary={true}
+                            onClick={() => {
+                                addTodo({
+                                    title,
+                                    description,
+                                    users,
+                                    date,
+                                    dispatch,
+                                })
+                            }}
+                        >
                             Add Task
-                        </CustomButton>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -118,12 +101,17 @@ const containerStyles = {
     borderRadius: '10px',
     boxShadow: boxShadow,
     padding: '30px',
-    transform: 'translate(-50%,95%)',
+    transform: 'translate(-50%,70%)',
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
 }
 
+const containerButtonsStyle = {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '0.8rem',
+}
 const nameStyles = {
     width: '100%',
 }
@@ -136,74 +124,4 @@ const containerFooterActionsStyles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-}
-
-const containerButtonsStyle = {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '0.8rem',
-}
-
-const buttonStyles = {
-    border: `1px solid`,
-    borderColor: colors.grayLightness,
-    padding: '0.5rem 0.8rem',
-    borderRadius: '10px',
-    color: colors.gray,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '0.5rem',
-    fontWeight: '500',
-    cursor: 'pointer',
-    backgroundColor: colors.white,
-    transition: 'all 0.2s',
-}
-const buttonHoverStyles = {
-    color: colors.primary,
-    borderColor: colors.primary,
-}
-
-const buttonPrimaryStyles = {
-    backgroundColor: colors.primary,
-    color: colors.white,
-}
-
-const buttonPrimaryHoverStyles = {
-    backgroundColor: colors.primaryDarkness,
-    color: colors.white,
-}
-const CustomButton = (props) => {
-    const [hover, isHover] = useState(false)
-
-    const buttonPrimary = hover
-        ? {
-              ...buttonStyles,
-              ...buttonPrimaryStyles,
-              ...buttonPrimaryHoverStyles,
-          }
-        : {
-              ...buttonStyles,
-              ...buttonPrimaryStyles,
-          }
-
-    const buttonDefault = hover
-        ? {
-              ...buttonStyles,
-              ...buttonHoverStyles,
-          }
-        : buttonStyles
-
-    const style = props.primary ? buttonPrimary : buttonDefault
-
-    return (
-        <button
-            style={style}
-            onClick={(e) => (props.onClick ? props.onClick(e) : null)}
-            onMouseEnter={() => isHover(true)}
-            onMouseOut={() => isHover(false)}
-        >
-            <div style={{ pointerEvents: 'none' }}>{props.children}</div>
-        </button>
-    )
 }

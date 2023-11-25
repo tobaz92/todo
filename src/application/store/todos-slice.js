@@ -9,8 +9,11 @@ export const todosSlice = createSlice({
         setTodoList: (currentSlice, action) => {
             currentSlice.data = action.payload
         },
+        addTodoList: (currentSlice, action) => {
+            currentSlice.data = [...currentSlice.data, action.payload]
+        },
     },
 })
 
 export const todosReducer = todosSlice.reducer
-export const { setTodoList } = todosSlice.actions
+export const { setTodoList, addTodoList } = todosSlice.actions
