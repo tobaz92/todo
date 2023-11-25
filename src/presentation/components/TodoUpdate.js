@@ -1,17 +1,34 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { addTodo } from 'domain/todo/TodoService'
+import { addTodo, updateTempTodo, updateTodo } from 'domain/todo/TodoService'
 import { colors, boxShadow } from 'presentation/styles/variables'
 import { Button } from './Button'
 import * as Icon from 'react-bootstrap-icons'
+import { useEffect } from 'react'
 
 const TodoUpdate = (props) => {
-    const [title, setTitle] = useState('')
-    const [description, setDescription] = useState('')
-    const [date, setDate] = useState('')
-    const [users, setUsers] = useState([])
+    const [title, setTitle] = useState(props.type?.data?.title ?? '')
+    const [description, setDescription] = useState(
+        props.type?.data?.description ?? '',
+    )
+    const [date, setDate] = useState(props.type?.data?.date ?? '')
+    const [users, setUsers] = useState(props.type?.data?.users ?? [])
     const dispatch = useDispatch()
-    console.log(props)
+
+    useEffect(() => {
+        if (props.type.type === 'update') {
+            updateTempTodo({
+                title,
+                description,
+                users,
+                id: props.type?.data.id,
+                date,
+                completed: false,
+                dispatch,
+            })
+        }
+    }, [title, description])
+
     return (
         <div style={containerStyles}>
             <div>
@@ -74,18 +91,32 @@ const TodoUpdate = (props) => {
                         <Button
                             primary={true}
                             onClick={() => {
-                                setTitle('')
-                                setDescription('')
-                                addTodo({
-                                    title,
-                                    description,
-                                    users,
-                                    date,
-                                    dispatch,
-                                })
+                                if (props.type.type === 'add') {
+                                    setTitle('')
+                                    setDescription('')
+                                    addTodo({
+                                        title,
+                                        description,
+                                        users,
+                                        date,
+                                        dispatch,
+                                    })
+                                } else if (props.type.type === 'update') {
+                                    props.updateVisible()
+                                    updateTodo(props.type?.data?.id, {
+                                        title,
+                                        description,
+                                        users,
+                                        date,
+                                        completed: false,
+                                        dispatch,
+                                    })
+                                }
                             }}
                         >
-                            {props.type.type === 'add' ? 'Add Task' : 'Update'}
+                            {props?.type?.type === 'add'
+                                ? 'Add Task'
+                                : 'Update'}
                         </Button>
                     </div>
                 </div>

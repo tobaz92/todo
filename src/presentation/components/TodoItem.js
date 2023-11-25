@@ -10,14 +10,7 @@ const TodoItem = (props) => {
         date: false,
         user: false,
     }
-    const [editable, setEditable] = useState(base)
 
-    const handlerEditable = (key) => {
-        setEditable({ ...editable, [key]: true })
-    }
-    const handlerResetEditable = () => {
-        setEditable(base)
-    }
     const sendNewValue = (value, keyChange) => {
         props.newValue({
             id: id,
@@ -34,23 +27,17 @@ const TodoItem = (props) => {
                 </div>
             </div>
             <div style={containerText}>
-                <div
-                    style={titleStyles}
-                    onKeyDown={(e) =>
-                        e.code === 'Enter' ? handlerResetEditable() : null
-                    }
-                >
+                <div style={titleStyles}>
                     <div
-                        onClick={() => handlerEditable('title')}
                         style={{
-                            display: editable.title ? 'none' : 'inline-block',
+                            display: 'inline-block',
                         }}
                     >
                         {title}
                     </div>
                     <div
                         style={{
-                            display: !editable.title ? 'none' : 'block',
+                            display: 'none',
                         }}
                     >
                         <input
@@ -85,7 +72,10 @@ const TodoItem = (props) => {
             {!props.data.completed && (
                 <div
                     style={iconStyles}
-                    onClick={() => props.updateVisible({ type: 'update', id })}
+                    onClick={() => {
+                        const data = props.data
+                        props.updateVisible({ type: 'update', data })
+                    }}
                 >
                     <Icon.Pencil />
                 </div>

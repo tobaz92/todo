@@ -1,5 +1,9 @@
 import { TodoApi } from 'api/TodoApi'
-import { setTodoList, addTodoList } from 'application/store/todos-slice'
+import {
+    setTodoList,
+    addTodoList,
+    updateTodoList,
+} from 'application/store/todos-slice'
 
 export const addTodo = async (data) => {
     // DEV
@@ -31,9 +35,28 @@ export const addTodo = async (data) => {
 export const removeTodo = (id) => {
     return TodoApi.deleteTodo(id)
 }
-export const updateTodo = (id, data) => {
-    return TodoApi.updateTodo(id, data)
+
+// TODO: perd le userid à l'update
+export const updateTodo = async (id, data) => {
+    try {
+        const response = await TodoApi.updateTodo(id, data)
+        if (response.status === 201 || response.status === 200) {
+            const responseData = response.data
+            data.dispatch(updateTodoList(responseData))
+        } else {
+            console.log(response)
+        }
+    } catch (error) {
+        console.error('Error adding todo:', error)
+    }
 }
+
+export const updateTempTodo = async (data) => {
+    const updatedTodoData = { ...data }
+    delete updatedTodoData.dispatch
+    data.dispatch(updateTodoList(updatedTodoData))
+}
+
 export const getTodos = async (dispatch) => {
     try {
         const listTodos = await TodoApi.fetchTodos()

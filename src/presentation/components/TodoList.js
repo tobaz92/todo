@@ -39,7 +39,7 @@ const TodoList = (props) => {
         )
 
         const todo = listTodos.filter((todo) => todo.id === todoId)[0]
-        const newTodo = { ...todo, completed: !todo.completed }
+        const newTodo = { ...todo, completed: !todo.completed, dispatch }
 
         setListTodos(updatedListTodos)
         updateTodo(todoId, newTodo)
@@ -135,7 +135,7 @@ const TodoList = (props) => {
             <div
                 onClick={() => {
                     props.updateVisible()
-                    props.updateType({ type: 'add' })
+                    props.updateType({ type: 'add', data: null })
                 }}
                 style={addStyles(props.updateIsVisible)}
             >

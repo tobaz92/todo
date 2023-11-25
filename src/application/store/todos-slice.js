@@ -6,14 +6,21 @@ export const todosSlice = createSlice({
         data: [],
     },
     reducers: {
-        setTodoList: (currentSlice, action) => {
-            currentSlice.data = action.payload
+        setTodoList: (state, action) => {
+            state.data = action.payload
         },
-        addTodoList: (currentSlice, action) => {
-            currentSlice.data = [...currentSlice.data, action.payload]
+        addTodoList: (state, action) => {
+            state.data = [...state.data, action.payload]
+        },
+        updateTodoList: (state, action) => {
+            state.data = state.data.map((todo) =>
+                todo.id === action.payload.id
+                    ? { ...todo, ...action.payload }
+                    : todo,
+            )
         },
     },
 })
 
 export const todosReducer = todosSlice.reducer
-export const { setTodoList, addTodoList } = todosSlice.actions
+export const { setTodoList, addTodoList, updateTodoList } = todosSlice.actions

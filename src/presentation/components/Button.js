@@ -1,44 +1,30 @@
 import React, { useState } from 'react'
 
-import { colors, boxShadow } from 'presentation/styles/variables'
+import { colors } from 'presentation/styles/variables'
 
-export const Button = (props) => {
-    const [hover, isHover] = useState(false)
+export const Button = ({ primary, onClick, children }) => {
+    const [hover, setHover] = useState(false)
 
-    const buttonPrimary = hover
-        ? {
-              ...buttonStyles,
-              ...buttonPrimaryStyles,
-              ...buttonPrimaryHoverStyles,
-          }
-        : {
-              ...buttonStyles,
-              ...buttonPrimaryStyles,
-          }
-
-    const buttonDefault = hover
-        ? {
-              ...buttonStyles,
-              ...buttonHoverStyles,
-          }
-        : buttonStyles
-
-    const style = props.primary ? buttonPrimary : buttonDefault
+    const buttonStyle = {
+        ...buttonStyles,
+        ...(primary ? buttonPrimaryStyles : {}),
+        ...(hover && (primary ? buttonPrimaryHoverStyles : buttonHoverStyles)),
+    }
 
     return (
         <button
-            style={style}
-            onClick={(e) => (props.onClick ? props.onClick(e) : null)}
-            onMouseEnter={() => isHover(true)}
-            onMouseOut={() => isHover(false)}
+            style={buttonStyle}
+            onClick={onClick}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
         >
-            <div style={alignStyle}>{props.children}</div>
+            <div style={alignStyle}>{children}</div>
         </button>
     )
 }
 
 const buttonStyles = {
-    border: `1px solid`,
+    border: '1px solid',
     borderColor: colors.grayLightness,
     padding: '0.5rem 0.8rem',
     borderRadius: '10px',
