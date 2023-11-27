@@ -13,9 +13,9 @@ const TodoList = (props) => {
     const todoList = useSelector((store) => store.TODO.data)
 
     // TODO: in progress : move to UserService.js
-    async function fetchUsers() {
+    async function getUsers() {
         try {
-            const listUsers = await TodoApi.fetchUsers()
+            const listUsers = await TodoApi.getUsers()
             setListUsers(listUsers)
         } catch (error) {
             console.log(error)
@@ -24,7 +24,7 @@ const TodoList = (props) => {
 
     useEffect(() => {
         getTodos(dispatch)
-        fetchUsers()
+        getUsers()
     }, [])
 
     useEffect(() => {

@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-export class UserApi {
-    static async getUsers() {
+export class SharedApi {
+    static async getShared() {
         try {
             const config = {
                 method: 'get',
-                url: `http://localhost:3200/users`,
+                url: `http://localhost:3200/sharedTodos`,
                 headers: {
                     'Content-Type': 'application/json',
                 },

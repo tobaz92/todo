@@ -1,8 +1,10 @@
+import { SharedApi } from 'api/SharedApi'
 import { TodoApi } from 'api/TodoApi'
 import {
     setTodoList,
     addTodoList,
     updateTodoList,
+    filterTodoList,
 } from 'application/store/todos-slice'
 
 export const addTodo = async (data) => {
@@ -59,8 +61,35 @@ export const updateTempTodo = async (data) => {
 
 export const getTodos = async (dispatch) => {
     try {
-        const listTodos = await TodoApi.fetchTodos()
+        const listTodos = await TodoApi.getTodos()
         dispatch(setTodoList(listTodos))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getTodosByUser = async (dispatch) => {
+    try {
+        const listTodos = await TodoApi.getTodos()
+        dispatch(setTodoList(listTodos))
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getSharedByUser = async (dispatch, userId) => {
+    try {
+        const listShared = await SharedApi.getShared()
+        const listSharedByUser = listShared.filter((shared) =>
+            shared.userIds.includes(userId),
+        )
+        const listIds = listSharedByUser.reduce((acc, shared) => {
+            acc.push(...shared.todoIds)
+            return acc
+        }, [])
+        dispatch(filterTodoList(listIds))
+
+        return listSharedByUser
     } catch (error) {
         console.log(error)
     }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export class TodoApi {
-    static async fetchTodos() {
+    static async getTodos() {
         try {
             const config = {
                 method: 'get',
@@ -16,26 +16,8 @@ export class TodoApi {
 
             return response.data
         } catch (error) {
-            console.log(error)
-        }
-    }
-    // TODO: In progress, move to UserApi.js
-    static async fetchUsers() {
-        try {
-            const config = {
-                method: 'get',
-                url: `http://localhost:3200/users`,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                mode: 'no-cors',
-            }
-
-            const response = await axios(config)
-
-            return response.data
-        } catch (error) {
-            console.log(error)
+            console.error('Error get todos:', error)
+            throw error
         }
     }
 
@@ -44,7 +26,7 @@ export class TodoApi {
             title: data.title,
             description: data.description,
             userId: data.userId,
-            completed: data.completed || false,
+            completed: false,
             date: data.date,
         }
 
@@ -82,7 +64,7 @@ export class TodoApi {
 
             return response
         } catch (error) {
-            console.error('Error adding todo:', error)
+            console.error('Error updating todo:', error)
             throw error
         }
     }
@@ -101,7 +83,28 @@ export class TodoApi {
 
             return response
         } catch (error) {
-            console.error('Error adding todo:', error)
+            console.error('Error deleting todo:', error)
+            throw error
+        }
+    }
+
+    // TODO: In progress, move to UserApi.js
+    static async getUsers() {
+        try {
+            const config = {
+                method: 'get',
+                url: `http://localhost:3200/users`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'no-cors',
+            }
+
+            const response = await axios(config)
+
+            return response.data
+        } catch (error) {
+            console.error('Error get users:', error)
             throw error
         }
     }

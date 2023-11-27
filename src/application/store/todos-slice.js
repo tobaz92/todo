@@ -4,9 +4,11 @@ export const todosSlice = createSlice({
     name: 'todosSlice',
     initialState: {
         data: [],
+        backup: [],
     },
     reducers: {
         setTodoList: (state, action) => {
+            state.backup = action.payload
             state.data = action.payload
         },
         addTodoList: (state, action) => {
@@ -19,8 +21,14 @@ export const todosSlice = createSlice({
                     : todo,
             )
         },
+        filterTodoList: (state, action) => {
+            state.data = state.backup.filter((todo) =>
+                action.payload.includes(todo.id),
+            )
+        },
     },
 })
 
 export const todosReducer = todosSlice.reducer
-export const { setTodoList, addTodoList, updateTodoList } = todosSlice.actions
+export const { setTodoList, addTodoList, updateTodoList, filterTodoList } =
+    todosSlice.actions
