@@ -7,4 +7,5 @@ import TodoApp from './containers/TodoApp'
 export function App() {
     const isAuthenticated = useSelector((store) => store.USER.isAuthenticated)
     return <>{isAuthenticated ? <TodoApp /> : <Login />}</>
+    // return <TodoApp />
 }

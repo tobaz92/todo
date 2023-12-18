@@ -1,75 +1,52 @@
 import React, { useState, useEffect } from 'react'
 
 const Main = () => {
-    const [containerScrollLeft, setContainerScrollLeft] = useState(0)
-    const [startX, setStartX] = useState(0)
-    const [onGrab, setOnGrab] = useState(false)
-
-    const grabContainer = (on, x, type) => {
+    useEffect(() => {
         const container = document.querySelector('main .container')
 
-        if ((on && type === 'down') || (on && type === 'move' && onGrab)) {
-            container.style.cursor = 'grabbing'
-            setOnGrab(true)
-            setStartX(x)
-        } else {
-            container.style.cursor = 'default'
-            setOnGrab(false)
-        }
-
-        if (type === 'up' || type === 'out') {
-            setOnGrab(false)
-        }
-
-        if (type === 'move' && onGrab) {
-            const dx = x - startX
-            container.scrollLeft = containerScrollLeft - dx
-            setContainerScrollLeft(container.scrollLeft)
-        }
-    }
-
-    useEffect(() => {
-        const handleMouseUp = () => {
-            setOnGrab(false)
-        }
-
-        if (onGrab) {
-            document.body.style.cursor = 'grabbing'
-
-            // Cleanup function
-            return () => {
-                document.body.style.cursor = 'default'
-                document.removeEventListener('mouseup', handleMouseUp)
-            }
-        } else {
-            document.body.style.cursor = 'default'
-        }
-    }, [containerScrollLeft, onGrab])
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault()
+            container.scrollLeft += e.deltaY
+        })
+    }, [])
 
     return (
         <main>
-            <div
-                className="container"
-                onMouseDown={(e) => grabContainer(true, e.clientX, 'down')}
-                onMouseUp={(e) => grabContainer(false, e.clientX, 'up')}
-                onMouseMove={(e) => grabContainer(null, e.clientX, 'move')}
-                onMouseOut={(e) => grabContainer(false, e.clientX, 'out')}
-            >
+            <div className="container">
                 <div className="main-title">SEMAINE</div>
                 <div className="sections">
                     {sections.map((section) => (
                         <div key={section.id} className="section">
                             <div className="title">{section.title}</div>
-                            {section.tasks.map((task) => (
-                                <div key={task.id} className="task">
-                                    <div className="task-title">
-                                        {task.title}
+                            <div className="tasks">
+                                {section.tasks.map((task) => (
+                                    <div key={task.id} className="task">
+                                        <div>
+                                            {task.isCompleted ? (
+                                                <span
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: '[x]',
+                                                    }}
+                                                />
+                                            ) : (
+                                                <span
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: '[&nbsp;]',
+                                                    }}
+                                                />
+                                            )}
+                                        </div>
+                                        <div>
+                                            <div className="task-title">
+                                                {task.title}
+                                            </div>
+                                            <div className="task-content">
+                                                {task.content}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="task-content">
-                                        {task.content}
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -90,21 +67,38 @@ main {
 	line-height: 1.5rem;
 }
 main .container{
-	padding: 3rem 4rem;
+	padding: 3rem 5rem;
 	width:100%;
 	height:100%;
 	overflow-x:auto;
 }
 main .main-title {
 	padding: 1rem 0;
+	position:sticky;
+	left:0;
 }
 main .sections{
+	width: fit-content;
 	display:grid;   
 	grid-auto-flow:column;  
 	grid-gap:5rem; 
 }
+main .tasks{
+	display:flex;
+	flex-direction:column;
+	gap:1rem
+}
+main .task{
+	display:flex;
+	flex-direction:row;
+	gap:1rem
+}
+
 main .section {
 	min-width: 30rem;
+}
+main .section:last-child {
+
 }
 main .section .title {
 	padding: 1rem 0;
@@ -121,18 +115,21 @@ const sections = [
                 title: 'Tâche 1',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: false,
             },
             {
                 id: 1,
                 title: 'Tâche 2',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: false,
             },
             {
                 id: 2,
                 title: 'Tâche 3',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: true,
             },
         ],
     },
@@ -145,18 +142,14 @@ const sections = [
                 title: 'Tâche 1',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: false,
             },
             {
                 id: 1,
                 title: 'Tâche 2',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-            },
-            {
-                id: 2,
-                title: 'Tâche 3',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: false,
             },
         ],
     },
@@ -169,68 +162,70 @@ const sections = [
                 title: 'Tâche 1',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: false,
             },
             {
                 id: 1,
                 title: 'Tâche 2',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: false,
             },
             {
                 id: 2,
                 title: 'Tâche 3',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: false,
+            },
+            {
+                id: 3,
+                title: 'Tâche 4',
+                content:
+                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: true,
             },
         ],
     },
     ,
     {
         id: 3,
-        title: 'SECTION 3',
+        title: 'SECTION 4',
         tasks: [
             {
                 id: 0,
                 title: 'Tâche 1',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: true,
             },
             {
                 id: 1,
                 title: 'Tâche 2',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: true,
             },
             {
                 id: 2,
                 title: 'Tâche 3',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: true,
             },
         ],
     },
     ,
     {
         id: 4,
-        title: 'SECTION 3',
+        title: 'SECTION 5',
         tasks: [
             {
                 id: 0,
                 title: 'Tâche 1',
                 content:
                     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-            },
-            {
-                id: 1,
-                title: 'Tâche 2',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-            },
-            {
-                id: 2,
-                title: 'Tâche 3',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+                isCompleted: true,
             },
         ],
     },
