@@ -1,10 +1,30 @@
 import axios from 'axios'
+
+import CryptoJS from 'crypto-js'
+
 import { useState } from 'react'
 
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../application/store/user-slice'
 
-const API_Login = async (email, password) => {
+const generateBrowserFingerprint = () => {
+    const fingerprint = {
+        userAgent: window.navigator.userAgent,
+        language: window.navigator.language,
+        colorDepth: window.screen.colorDepth,
+        deviceMemory: navigator.deviceMemory,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        timezoneOffset: new Date().getTimezoneOffset(),
+    }
+
+    return JSON.stringify(fingerprint)
+}
+
+const API_Login = async (
+    email,
+    password,
+    decodedRememberedUser = undefined,
+) => {
     try {
         const config = {
             method: 'post',
@@ -15,14 +35,41 @@ const API_Login = async (email, password) => {
             data: JSON.stringify({
                 email,
                 password,
+                rememberedUser: decodedRememberedUser,
             }),
         }
-
         const response = await axios(config)
         return response.data
     } catch (error) {
         console.error('Error during login:', error)
         throw error
+    }
+}
+
+const LogWithRememberedUser = async (dispatch) => {
+    if (localStorage.getItem('rememberedUser')) {
+        const rememberedUser = localStorage.getItem('rememberedUser')
+
+        // Décodez la chaîne Base64 (JWT) en objet JavaScript
+        const decodedRememberedUser = JSON.parse(atob(rememberedUser))
+
+        try {
+            const data = await API_Login(
+                decodedRememberedUser.email,
+                undefined,
+                decodedRememberedUser.data,
+            )
+
+            const token = data.token
+            const secretKey = data.secretKey
+            const userId = data.userId
+
+            if (data.token !== undefined) {
+                dispatch(setUser(data))
+            }
+        } catch (error) {
+            console.error('Error during login with remembered user:', error)
+        }
     }
 }
 
@@ -38,6 +85,7 @@ const API_Register = async (username, email, password) => {
                 username,
                 email,
                 password,
+                browserFingerprint: generateBrowserFingerprint(),
             }),
         }
 
@@ -52,6 +100,10 @@ const API_Register = async (username, email, password) => {
 const Login = () => {
     const dispatch = useDispatch()
 
+    LogWithRememberedUser(dispatch)
+
+    const [language, setLanguage] = useState('fr')
+
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -61,12 +113,12 @@ const Login = () => {
     const [passwordError, setPasswordError] = useState('')
     const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
+    const [rememberMe, setRememberMe] = useState(false)
     const [type, setType] = useState({
         login: true,
         register: false,
         forgotPassword: false,
     })
-    const [language, setLanguage] = useState('fr')
 
     const text = {
         en: {
@@ -150,9 +202,33 @@ const Login = () => {
         }
 
         if (email !== '' && password !== '' && type.login) {
-            console.log('ici')
             const data = await API_Login(email, password)
+
+            if (rememberMe) {
+                console.log('secretKey', data.secretKey)
+
+                const encryptedData = CryptoJS.AES.encrypt(
+                    JSON.stringify({ password }),
+                    data.secretKey,
+                )
+
+                const encryptedDataWithEmail = {
+                    data: encryptedData.toString(),
+                    email: email,
+                }
+
+                const encryptedDataWithEmailBase64 = btoa(
+                    JSON.stringify(encryptedDataWithEmail),
+                )
+
+                localStorage.setItem(
+                    'rememberedUser',
+                    encryptedDataWithEmailBase64.toString(),
+                )
+            }
+
             if (data.token !== undefined) {
+                console.log(data)
                 dispatch(setUser(data))
             }
         }
@@ -278,7 +354,15 @@ const Login = () => {
 	`
 
     return (
-        <form className="loginPage" onSubmit={handleSubmit}>
+        <form
+            className="loginPage"
+            onSubmit={handleSubmit}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    handleSubmit(e)
+                }
+            }}
+        >
             <h1>
                 {type.login
                     ? text.titleLogin
@@ -324,6 +408,7 @@ const Login = () => {
                             type="checkbox"
                             name="rememberMe"
                             id="rememberMe"
+                            onChange={(e) => setRememberMe(e.target.checked)}
                         />
                         <label htmlFor="rememberMe">{text.rememberMe}</label>
                     </div>
@@ -350,6 +435,7 @@ const Login = () => {
                 {type.login ? text.login : ''}
                 {type.forgotPassword ? text.submitButtonForgotPassword : ''}
             </button>
+
             {!type.login && (
                 <>
                     <div className="lineSwitch">
@@ -370,7 +456,6 @@ const Login = () => {
                     </div>
                 </>
             )}
-
             {type.login && (
                 <>
                     <div className="lineSwitch">
@@ -391,6 +476,7 @@ const Login = () => {
                     </div>
                 </>
             )}
+
             <style>{LoginStyles}</style>
         </form>
     )
