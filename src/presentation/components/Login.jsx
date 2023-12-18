@@ -6,6 +6,7 @@ import { useState } from 'react'
 
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../application/store/user-slice'
+import { useEffect } from 'react'
 
 const generateBrowserFingerprint = () => {
     const fingerprint = {
@@ -102,6 +103,8 @@ const Login = () => {
 
     LogWithRememberedUser(dispatch)
 
+    // if parameter in url
+
     const [language, setLanguage] = useState('fr')
 
     const [email, setEmail] = useState('')
@@ -173,6 +176,24 @@ const Login = () => {
             passwordInvalid: 'Le mot de passe est invalide',
         },
     }[language]
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search)
+        if (urlParams.get('email') !== null) {
+            setEmail(urlParams.get('email'))
+        }
+        if (urlParams.get('pass') !== null) {
+            setPassword(urlParams.get('pass'))
+        }
+
+        if (urlParams.get('email') !== null || urlParams.get('pass') !== null) {
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname,
+            )
+        }
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
