@@ -1,15 +1,10 @@
 import { useSelector } from 'react-redux'
 import Login from './components/Login'
-// import TodoApp from './containers/TodoApp'
+import './styles/fonts.css'
 import './styles/App.css'
+import TodoApp from './containers/TodoApp'
 
 export function App() {
     const isAuthenticated = useSelector((store) => store.USER.isAuthenticated)
-    return (
-        <>
-            {!isAuthenticated && <Login />}
-            {isAuthenticated && <h1>Todo App</h1>}
-            {/* <TodoApp /> */}
-        </>
-    )
+    return <>{isAuthenticated ? <TodoApp /> : <Login />}</>
 }

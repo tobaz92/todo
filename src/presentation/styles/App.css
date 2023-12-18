@@ -1,45 +1,51 @@
 html,
-body{
-	font-family: Verdana, Geneva, Tahoma, sans-serif;
-	background-color: #eeeef4;
+body {
+    font-family: 'IBM Plex Mono';
+    background-color: #ffffff;
 
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
-	font-size: 14px;
+    width: 100%;
+    height: 100vh;
+	overflow-y: hidden;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
 }
 
-
-@media screen and (min-width: 480px){
-	html,
-	body{
-		font-size: 16px;
-	}
+@media screen and (min-width: 480px) {
+    html,
+    body {
+        font-size: 14px;
+    }
 }
 
-*{
-	box-sizing: border-box;
-	font-family: Verdana, Geneva, Tahoma, sans-serif;
-	
+* {
+    box-sizing: border-box;
+    font-family: 'IBM Plex Mono';
 }
-#root{
-	width: 100%;
-	height: 100%;
+/* #root {
+    width: 100%;
+    height: 100%;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+@media screen and (min-width: 480px) {
+    #root {
+        justify-content: center;
+    }
+} */
 
-div, span, a, button{
-	user-select: none;
+div,
+span,
+a,
+button {
+    user-select: none;
 }
-h1{
-	display: flex;
-	align-items: center;
-	font-weight: 400;
+h1 {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
 }
 
 button {
@@ -65,4 +71,29 @@ button {
 button::-moz-focus-inner {
     border: 0;
     padding: 0;
+}
+
+ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+li{
+	padding: 0;
+	margin: 0;
+}
+
+
+h1,h2,h3,h4,h5,h6 {
+	font-weight: 400;
+	margin: 0;
+	padding: 0;
+	font-size: 1rem;
+}
+
+.pointer{
+	cursor: pointer;
+}
+.pointer:hover{
+	font-weight:500;
 }

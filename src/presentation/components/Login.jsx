@@ -101,9 +101,10 @@ const API_Register = async (username, email, password) => {
 const Login = () => {
     const dispatch = useDispatch()
 
-    LogWithRememberedUser(dispatch)
-
     // if parameter in url
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    LogWithRememberedUser(dispatch, setIsAuthenticated)
 
     const [language, setLanguage] = useState('fr')
 
@@ -122,6 +123,15 @@ const Login = () => {
         register: false,
         forgotPassword: false,
     })
+
+    // if (!isAuthenticated) {
+    //     return (
+    //         <div className="loading">
+    //             loading
+    //             <div></div>
+    //         </div>
+    //     )
+    // }
 
     const text = {
         en: {
@@ -267,239 +277,141 @@ const Login = () => {
         }
     }
 
-    const LoginStyles = `
-	.loginPage {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		width: 100%;
-		padding: 1rem;
-		border-radius: 5px;
-		font-size: 1rem;
-	}
-		
-	@media screen and (min-width: 480px) {
-		.loginPage {
-			max-width: 450px;
-			padding: 2rem;
-			border: 1px solid #ccc;
-			box-sizing: border-box;
-		}
-	}
-	
-	.loginPage h1 {
-		margin: 0;
-		margin-bottom: 1rem;
-	}
-	
-	.loginPage label {
-		display: block;
-		margin-bottom: 0.5rem;
-	}
-	
-	.loginPage input {
-		padding: 0.5rem;
-		border: 1px solid #ccc;
-		border-radius: 5px;
-		width: 100%;
-		box-sizing: border-box;
-	}
-	
-	.loginPage .line {
-		display: flex;
-		justify-content: space-between;
-		gap: 0.5rem;
-	}
-	
-	@media screen and (min-width: 480px) {
-		.loginPage .line {
-			gap: 1rem;
-		}
-	}
-	
-	.loginPage .rememberMe {
-		display: flex;
-		align-items: center;
-	}
-	
-	.loginPage .rememberMe input {
-		margin-right: 0.5rem;
-	}
-	
-	.loginPage .rememberMe label {
-		white-space: nowrap;
-		margin-bottom: 0;
-	}
-	
-	.loginPage .forgot-password {
-		text-align: right;
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-	}
-	
-	.loginPage .forgot-password a {
-		color: #333;
-		text-decoration: none;
-	}
-	
-	.loginPage .forgot-password a:hover {
-		text-decoration: underline;
-	}
-	
-	.loginPage button {
-		padding: 0.5rem 1rem;
-		border: none;
-		border-radius: 5px;
-		background-color: #333;
-		color: #fff;
-		cursor: pointer;
-	}
-	
-	.loginPage button:hover {
-		background-color: #444;
-	}
-	
-	.loginPage .lineSwitch {
-		text-align: center;
-	}
-	
-	.loginPage .lineSwitch a {
-		color: #333;
-		text-decoration: none;
-	}
-	
-	.loginPage .lineSwitch a:hover {
-		text-decoration: underline;
-	}
-	`
-
     return (
-        <form
-            className="loginPage"
-            onSubmit={handleSubmit}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    handleSubmit(e)
-                }
-            }}
-        >
-            <h1>
-                {type.login
-                    ? text.titleLogin
-                    : type.register
-                      ? text.titleRegister
-                      : text.forgotPassword}
-            </h1>
-            {type.register && (
-                <InputUsername
+        <div className="container-loginPage">
+            <div>
+                <h1>T0D0</h1>
+            </div>
+            <form
+                className="loginPage"
+                onSubmit={handleSubmit}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        handleSubmit(e)
+                    }
+                }}
+            >
+                <h2>
+                    {type.login
+                        ? text.titleLogin
+                        : type.register
+                          ? text.titleRegister
+                          : text.forgotPassword}
+                </h2>
+                {type.register && (
+                    <InputUsername
+                        text={text}
+                        usernameError={usernameError}
+                        setUsername={setUsername}
+                        username={username}
+                    />
+                )}
+                <InputEmail
                     text={text}
-                    usernameError={usernameError}
-                    setUsername={setUsername}
-                    username={username}
+                    emailError={emailError}
+                    setEmail={setEmail}
+                    email={email}
                 />
-            )}
-            <InputEmail
-                text={text}
-                emailError={emailError}
-                setEmail={setEmail}
-                email={email}
-            />
-            {(type.login || type.register) && (
-                <InputPassword
-                    label={text.password}
-                    passwordError={passwordError}
-                    setPassword={setPassword}
-                    password={password}
-                />
-            )}
-            {type.register && (
-                <InputPassword
-                    label={text.confirmpassword}
-                    passwordError={confirmPasswordError}
-                    setPassword={setConfirmPassword}
-                    password={confirmPassword}
-                />
-            )}
+                {(type.login || type.register) && (
+                    <InputPassword
+                        label={text.password}
+                        passwordError={passwordError}
+                        setPassword={setPassword}
+                        password={password}
+                    />
+                )}
+                {type.register && (
+                    <InputPassword
+                        label={text.confirmpassword}
+                        passwordError={confirmPasswordError}
+                        setPassword={setConfirmPassword}
+                        password={confirmPassword}
+                    />
+                )}
 
-            {type.login && !type.register && (
-                <div className="line">
-                    <div className="rememberMe">
-                        <input
-                            type="checkbox"
-                            name="rememberMe"
-                            id="rememberMe"
-                            onChange={(e) => setRememberMe(e.target.checked)}
-                        />
-                        <label htmlFor="rememberMe">{text.rememberMe}</label>
+                {type.login && !type.register && (
+                    <div className="line">
+                        <div className="rememberMe">
+                            <input
+                                type="checkbox"
+                                name="rememberMe"
+                                id="rememberMe"
+                                onChange={(e) =>
+                                    setRememberMe(e.target.checked)
+                                }
+                            />
+                            <label htmlFor="rememberMe">
+                                {text.rememberMe}
+                            </label>
+                        </div>
+                        <div className="forgot-password">
+                            <a
+                                href="/forgot-password"
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    setType({
+                                        login: false,
+                                        register: false,
+                                        forgotPassword: true,
+                                    })
+                                }}
+                            >
+                                {text.forgotPassword}
+                            </a>
+                        </div>
                     </div>
-                    <div className="forgot-password">
-                        <a
-                            href="/forgot-password"
-                            onClick={(e) => {
-                                e.preventDefault()
-                                setType({
-                                    login: false,
-                                    register: false,
-                                    forgotPassword: true,
-                                })
-                            }}
-                        >
-                            {text.forgotPassword}
-                        </a>
-                    </div>
-                </div>
-            )}
+                )}
 
-            <button type="submit">
-                {type.register ? text.register : ''}
-                {type.login ? text.login : ''}
-                {type.forgotPassword ? text.submitButtonForgotPassword : ''}
-            </button>
+                <button type="submit">
+                    {type.register ? text.register : ''}
+                    {type.login ? text.login : ''}
+                    {type.forgotPassword ? text.submitButtonForgotPassword : ''}
+                </button>
 
-            {!type.login && (
-                <>
-                    <div className="lineSwitch">
-                        {text.youHaveAnAccount}&nbsp;
-                        <a
-                            href="/login"
-                            onClick={(e) => {
-                                e.preventDefault()
-                                setType({
-                                    login: true,
-                                    register: false,
-                                    forgotPassword: false,
-                                })
-                            }}
-                        >
-                            Login
-                        </a>
-                    </div>
-                </>
-            )}
-            {type.login && (
-                <>
-                    <div className="lineSwitch">
-                        {text.dontHaveAnAccount}&nbsp;
-                        <a
-                            href="/register"
-                            onClick={(e) => {
-                                e.preventDefault()
-                                setType({
-                                    login: false,
-                                    register: true,
-                                    forgotPassword: false,
-                                })
-                            }}
-                        >
-                            {text.titleRegister}
-                        </a>
-                    </div>
-                </>
-            )}
+                {!type.login && (
+                    <>
+                        <div className="lineSwitch">
+                            {text.youHaveAnAccount}&nbsp;
+                            <a
+                                href="/login"
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    setType({
+                                        login: true,
+                                        register: false,
+                                        forgotPassword: false,
+                                    })
+                                }}
+                            >
+                                {text.titleLogin}
+                            </a>
+                        </div>
+                    </>
+                )}
+                {type.login && (
+                    <>
+                        <div className="lineSwitch">
+                            {text.dontHaveAnAccount}&nbsp;
+                            <a
+                                href="/register"
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    setType({
+                                        login: false,
+                                        register: true,
+                                        forgotPassword: false,
+                                    })
+                                }}
+                            >
+                                {text.titleRegister}
+                            </a>
+                        </div>
+                    </>
+                )}
 
-            <style>{LoginStyles}</style>
-        </form>
+                <style>{LoginStyles}</style>
+            </form>
+        </div>
     )
 }
 export default Login
@@ -509,7 +421,7 @@ const ErrorMsg = ({ msg }) => {
 		.errorMsg{
 			padding: 0.5rem 1rem;
 			border-radius: 0 0 5px 5px;
-			background-color: #f44336;
+			background-color: #3663f4;
 			color: #fff;
 			font-size: 0.9rem;
 		}
@@ -573,3 +485,148 @@ const InputPassword = ({ label, passwordError, setPassword, password }) => {
         </div>
     )
 }
+const loadingStyles = `
+	.loading{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+	}
+	.loading div{
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		background-color: #333;
+		animation: loading 1s infinite;
+	}
+	@keyframes loading{
+		0%{
+			transform: scale(0);
+		}
+		50%{
+			transform: scale(1);
+		}
+		100%{
+			transform: scale(0);
+		}
+	}
+`
+
+const LoginStyles = `
+
+.container-loginPage{
+	display: flex;
+	flex-direction: column;
+
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+.container-loginPage h1{
+	padding: 1rem;
+}
+.loginPage {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	width: 100%;
+	padding: 1rem;
+	border-radius: 3px;
+	font-size: 1rem;
+}
+	
+@media screen and (min-width: 480px) {
+	.loginPage {
+		max-width: 450px;
+		padding: 2rem;
+		border: 1px solid #ccc;
+		box-sizing: border-box;
+	}
+}
+
+.loginPage h1 {
+	margin: 0;
+	margin-bottom: 1rem;
+}
+
+.loginPage label {
+	display: block;
+	margin-bottom: 0.5rem;
+}
+
+.loginPage input {
+	padding: 0.5rem;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.loginPage .line {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
+@media screen and (min-width: 480px) {
+	.loginPage .line {
+		gap: 1rem;
+	}
+}
+
+.loginPage .rememberMe {
+	display: flex;
+	align-items: center;
+}
+
+.loginPage .rememberMe input {
+	margin-right: 0.5rem;
+}
+
+.loginPage .rememberMe label {
+	white-space: nowrap;
+	margin-bottom: 0;
+}
+
+.loginPage .forgot-password {
+	text-align: right;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.loginPage .forgot-password a {
+	color: #333;
+	text-decoration: none;
+}
+
+.loginPage .forgot-password a:hover {
+	text-decoration: underline;
+}
+
+.loginPage button {
+	padding: 0.5rem 1rem;
+	border: none;
+	// border-radius: 3px;
+	background-color: #333;
+	color: #fff;
+	cursor: pointer;
+}
+
+.loginPage button:hover {
+	background-color: #444;
+}
+
+.loginPage .lineSwitch {
+	text-align: center;
+}
+
+.loginPage .lineSwitch a {
+	color: #333;
+	text-decoration: none;
+}
+
+.loginPage .lineSwitch a:hover {
+	text-decoration: underline;
+}
+`

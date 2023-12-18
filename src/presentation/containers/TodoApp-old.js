@@ -7,7 +7,7 @@ import UserSelector from 'presentation/components/UserSelector'
 import { getSharedByUser, getTodos } from 'domain/todo/TodoService'
 import { useDispatch } from 'react-redux'
 
-const TodoApp = () => {
+const TodoAppOld = () => {
     const [updateIsVisible, setUpdateIsVisible] = useState(false)
     const [updateType, setUpdateType] = useState({ type: 'add', data: null })
     const dispatch = useDispatch()
@@ -51,7 +51,7 @@ const TodoApp = () => {
     )
 }
 
-export default TodoApp
+export default TodoAppOld
 
 const containerStyles = {
     position: 'relative',
