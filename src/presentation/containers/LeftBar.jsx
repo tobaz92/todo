@@ -1,28 +1,10 @@
 import React, { useState } from 'react'
 
-const LeftBar = () => {
+const LeftBar = ({ arrayProjects, arrayTasks, onClick }) => {
     const [isActived, setIsActived] = useState(null)
 
-    const [projects, setProjects] = useState([
-        {
-            id: 0,
-            title: 'SEMAINE',
-            nb: 2,
-        },
-        {
-            id: 1,
-            title: 'PROJET 1',
-            nb: 10,
-        },
-        {
-            id: 2,
-            title: 'PROJET 2',
-            nb: 5,
-        },
-    ])
-
-    const projetClickHandler = (id) => {
-        setIsActived(id)
+    const arrayFilterById = (array, keyId, id) => {
+        return array.filter((element) => element[keyId] === id)
     }
 
     return (
@@ -30,23 +12,30 @@ const LeftBar = () => {
             <div className="left-bar">
                 <h1 className="pointer">T0D0</h1>
                 <div className="menu">
-                    <div className="user pointer">→ TOMI</div>
-                    <div className="task pointer">+ Ajouter une tâche</div>
-                    <div className="task pointer">∂ Recherche</div>
+                    <div className="menuuser pointer">→ TOMI</div>
+                    <div className="menuaddtask pointer">
+                        + Ajouter une tâche
+                    </div>
+                    <div className="menusearchtask pointer">∂ Recherche</div>
                 </div>
                 <div className="projects">
                     <h2>Mes projets</h2>
                     <div className="project-list">
-                        {projects.map((project) => (
+                        {arrayProjects.map((project) => (
                             <div
                                 key={project.id}
                                 className={`project pointer ${
                                     isActived === project.id ? 'active' : ''
                                 }`}
-                                onClick={() => projetClickHandler(project.id)}
+                                onClick={() => {
+                                    setIsActived(project.id)
+                                    onClick(project.id)
+                                }}
                             >
                                 <span className="title">{project.title}</span>
-                                <span className="nb">{project.nb}</span>
+                                <span className="nb">{
+                                    arrayFilterById(arrayTasks, 'projectId', project.id).length
+                                }</span>
                             </div>
                         ))}
                     </div>
@@ -72,7 +61,7 @@ const LeftStyles = `
 	position: sticky;
 	left:0;
 }
-.left-bar  h1, .left-bar  h2, .left-bar .add-project, .left-bar .user{
+.left-bar  h1, .left-bar  h2, .left-bar .add-project, .left-bar .menuuser{
 	padding: 1rem 0;
 }
 .left-bar  h2{

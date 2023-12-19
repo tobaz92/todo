@@ -1,9 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
+import Section from '../components/Sections'
 
-const Main = () => {
+const Main = ({ language = 'fr', project, sections, tasks }) => {
+
+    const arrayFilterById = (array, keyId, id) => {
+        return array.filter((element) => element[keyId] === id)
+    }
+
+    const draggable = (draggable)=>{
+        const {sectionId, drag} = draggable
+        console.log('sectionId', sectionId)
+        console.log('drag', drag)
+    }
+
+    const sectionsOrder = useMemo(() => {
+        return sections.slice().sort((a, b) => a.order - b.order);
+    }, [sections]);
+    
+
     useEffect(() => {
         const container = document.querySelector('main .container')
-
         container.addEventListener('wheel', (e) => {
             e.preventDefault()
             container.scrollLeft += e.deltaY
@@ -14,41 +30,27 @@ const Main = () => {
         <main>
             <div className="container">
                 <div className="main-title">SEMAINE</div>
+
                 <div className="sections">
-                    {sections.map((section) => (
-                        <div key={section.id} className="section">
-                            <div className="title">{section.title}</div>
-                            <div className="tasks">
-                                {section.tasks.map((task) => (
-                                    <div key={task.id} className="task">
-                                        <div>
-                                            {task.isCompleted ? (
-                                                <span
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: '[x]',
-                                                    }}
-                                                />
-                                            ) : (
-                                                <span
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: '[&nbsp;]',
-                                                    }}
-                                                />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <div className="task-title">
-                                                {task.title}
-                                            </div>
-                                            <div className="task-content">
-                                                {task.content}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                    {sectionsOrder.map((section) => (
+                        <Section
+                            language={language}
+                            section={section}
+                            tasks={arrayFilterById(
+                                tasks,
+                                'sectionId',
+                                section.id,
+                            )}
+                            key={section.id}
+                            draggableFunc={draggable}
+                        />
                     ))}
+
+                    <div className="section">
+                        <div className="title pointer">
+                            + Ajouter une section
+                        </div>
+                    </div>
                 </div>
             </div>
             <style>{MainStyles}</style>
@@ -73,160 +75,22 @@ main .container{
 	overflow-x:auto;
 }
 main .main-title {
-	padding: 1rem 0;
+	padding: 1rem;
 	position:sticky;
 	left:0;
 }
+
 main .sections{
 	width: fit-content;
 	display:grid;   
 	grid-auto-flow:column;  
 	grid-gap:5rem; 
+    
 }
 main .tasks{
 	display:flex;
 	flex-direction:column;
 	gap:1rem
 }
-main .task{
-	display:flex;
-	flex-direction:row;
-	gap:1rem
-}
 
-main .section {
-	min-width: 30rem;
-}
-main .section:last-child {
-
-}
-main .section .title {
-	padding: 1rem 0;
-}
 `
-
-const sections = [
-    {
-        id: 0,
-        title: 'SECTION 1',
-        tasks: [
-            {
-                id: 0,
-                title: 'Tâche 1',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: false,
-            },
-            {
-                id: 1,
-                title: 'Tâche 2',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: false,
-            },
-            {
-                id: 2,
-                title: 'Tâche 3',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: true,
-            },
-        ],
-    },
-    {
-        id: 1,
-        title: 'SECTION 2',
-        tasks: [
-            {
-                id: 0,
-                title: 'Tâche 1',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: false,
-            },
-            {
-                id: 1,
-                title: 'Tâche 2',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: false,
-            },
-        ],
-    },
-    {
-        id: 2,
-        title: 'SECTION 3',
-        tasks: [
-            {
-                id: 0,
-                title: 'Tâche 1',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: false,
-            },
-            {
-                id: 1,
-                title: 'Tâche 2',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: false,
-            },
-            {
-                id: 2,
-                title: 'Tâche 3',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: false,
-            },
-            {
-                id: 3,
-                title: 'Tâche 4',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: true,
-            },
-        ],
-    },
-    ,
-    {
-        id: 3,
-        title: 'SECTION 4',
-        tasks: [
-            {
-                id: 0,
-                title: 'Tâche 1',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: true,
-            },
-            {
-                id: 1,
-                title: 'Tâche 2',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: true,
-            },
-            {
-                id: 2,
-                title: 'Tâche 3',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: true,
-            },
-        ],
-    },
-    ,
-    {
-        id: 4,
-        title: 'SECTION 5',
-        tasks: [
-            {
-                id: 0,
-                title: 'Tâche 1',
-                content:
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
-                isCompleted: true,
-            },
-        ],
-    },
-]
