@@ -5,83 +5,125 @@ import Task from './Task'
 import Draggable from 'react-draggable' // The default
 import { useEffect } from 'react'
 
-const Section = ({ language = 'en', section, tasks, draggableFunc }) => {
+const Section = ({
+    language = 'en',
+    section,
+    tasks,
+    order,
+    sectionId,
+    indexSection,
+}) => {
     const [addTask, setAddTask] = useState([])
 
+    const [drag, setDrag] = useState(false)
     const [draggable, setDraggable] = useState({
         onStop: {},
         onStart: {},
         onDrag: {},
     })
-    const [drag, setDrag] = useState(false)
+    const [onPosition, setOnPosition] = useState({ x: 0, y: 0 })
+    const [onOrder, setOnOrder] = useState(order)
     useEffect(() => {
-        draggableFunc({ sectionId: section.id, drag: draggable })
+        const sectionWidth = document.querySelector('.section').offsetWidth
+        const allSections = document.querySelectorAll('.section-wrapper')
+        // sect all position of sections
+        const allSectionsPosition = []
+        allSections.forEach((section) => {
+            allSectionsPosition.push(section.getBoundingClientRect().x)
+        })
+
+        if (draggable.onDrag.data) {
+            const section = draggable.onDrag.data.node
+            const x = section.getBoundingClientRect().x
+            const y = section.getBoundingClientRect().y
+
+            const positionSection =
+                allSectionsPosition.findIndex(
+                    (sectionPosition) => sectionPosition > x,
+                ) - 1
+            if (onOrder !== positionSection) {
+                setOnOrder(positionSection)
+            }
+        }
     }, [draggable])
+    useEffect(() => {
+        indexSection(onOrder, sectionId)
+    }, [onOrder])
+
+    // useEffect(() => {
+    //     console.log('position', position)
+    // }, [position])
 
     return (
         <div className={`section-wrapper ${drag ? 'drag' : ''}`}>
             <Draggable
+                // axis="x"
+                // bounds=".container-wrapper"
+                position={onPosition}
                 handle=".section .title"
-                onStart={(e) => {
+                onStart={(e, data) => {
                     setDraggable((prevState) => ({
                         ...prevState,
-                        onStart: e,
+                        onStart: { e, data },
                     }))
                     setDrag(true)
                 }}
-                onStop={(e) => {
+                onStop={(e, data) => {
                     setDraggable((prevState) => ({
                         ...prevState,
-                        onStop: e,
+                        onStop: { e, data },
                     }))
                     setDrag(false)
                 }}
-                onDrag={(e) => {
+                onDrag={(e, data) => {
                     setDraggable((prevState) => ({
                         ...prevState,
-                        onDrag: e,
+                        onDrag: { e, data },
                     }))
                 }}
-                grid={[25, 25]}
+                // offsetParent={document.querySelector('.main .sections')}
+                // grid={[25, 25]}
             >
-                <div
-                    key={section.id}
-                    className={`section ${drag ? 'drag' : ''}`}
-                >
-                    <div className="title">{section.title}</div>
-                    <div className="tasks">
-                        {tasks.map((task) => (
-                            <Task
-                                task={task}
-                                language={language}
-                                key={task.id}
-                            />
-                        ))}
-
-                        {!drag &&
-                            (!addTask[section.id] ? (
-                                <AddTask
+                <div>
+                    <div
+                        key={section.id}
+                        className={`section ${drag ? 'drag' : ''}`}
+                    >
+                        <div className="title">{section.title}</div>
+                        <div className="tasks">
+                            {tasks.map((task) => (
+                                <Task
+                                    task={task}
                                     language={language}
-                                    add={() =>
-                                        setAddTask((prevState) => ({
-                                            ...prevState,
-                                            [section.id]: true,
-                                        }))
-                                    }
-                                />
-                            ) : (
-                                <EditTask
-                                    language={language}
-                                    cancel={() =>
-                                        setAddTask((prevState) => ({
-                                            ...prevState,
-                                            [section.id]: false,
-                                        }))
-                                    }
+                                    key={task.id}
                                 />
                             ))}
+
+                            {!drag &&
+                                (!addTask[section.id] ? (
+                                    <AddTask
+                                        language={language}
+                                        add={() =>
+                                            setAddTask((prevState) => ({
+                                                ...prevState,
+                                                [section.id]: true,
+                                            }))
+                                        }
+                                    />
+                                ) : (
+                                    <EditTask
+                                        language={language}
+                                        cancel={() =>
+                                            setAddTask((prevState) => ({
+                                                ...prevState,
+                                                [section.id]: false,
+                                            }))
+                                        }
+                                    />
+                                ))}
+                        </div>
+                        <style>{SectionStyles}</style>
                     </div>
-                    <style>{SectionStyles}</style>
                 </div>
             </Draggable>
         </div>
@@ -107,14 +149,17 @@ const SectionStyles = `
     border-radius: 5px;
     padding: 1rem;
     background:#fff;
-}
-
-.section .title {
-	padding: 0 0 1rem 0;
-    cursor: grab;
+	transition: transform 0.05s ease-out;
 }
 .section.drag{
     border: 1px solid #ccc;
     z-index: 10;
+	// transform: rotate(2deg);
+	transition: transform 0.1s ease-in;
 }
+.section .title {
+	padding: 0 0 1rem 0;
+    cursor: grab;
+}
+
 `

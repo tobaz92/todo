@@ -6,22 +6,31 @@ import TodoApp from './containers/TodoApp'
 
 export function App() {
     const isAuthenticated = useSelector((store) => store.USER.isAuthenticated)
-    return <>{isAuthenticated ? <TodoApp arrayProjects={projects} arraySections={sections} arrayTasks={tasks} /> : <Login />}</>
-    // return <TodoApp />
+    // return <>{isAuthenticated ? <TodoApp arrayProjects={projects} arraySections={sections} arrayTasks={tasks} /> : <Login />}</>
+    return (
+        <TodoApp
+            arrayProjects={projects}
+            arraySections={sections}
+            arrayTasks={tasks}
+        />
+    )
 }
 
 const projects = [
     {
         id: 'p0',
         title: 'TODO APP',
+        order: 0,
     },
     {
         id: 'p1',
         title: 'PROJET 2',
+        order: 1,
     },
     {
         id: 'p2',
         title: 'PROJET 3',
+        order: 2,
     },
 ]
 const sections = [
@@ -35,13 +44,13 @@ const sections = [
         id: 's1',
         projectId: 'p0',
         title: 'EN COURS',
-        order:1,
+        order: 1,
     },
     {
         id: 's2',
         projectId: 'p0',
         title: 'FAIT',
-        order:2,
+        order: 2,
     },
     {
         id: 's3',
@@ -78,8 +87,7 @@ const sections = [
         projectId: 'p2',
         title: 'A FAIRE',
         order: 0,
-    }
-
+    },
 ]
 const tasks = [
     {
@@ -108,7 +116,8 @@ const tasks = [
         projectId: 'p2',
         sectionId: 's8',
         userId: ['u15', 'u16'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -117,7 +126,8 @@ const tasks = [
         projectId: 'p0',
         sectionId: 's3',
         userId: ['u17', 'u18'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -126,7 +136,8 @@ const tasks = [
         projectId: 'p1',
         sectionId: 's6',
         userId: ['u10', 'u11'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -135,7 +146,8 @@ const tasks = [
         projectId: 'p2',
         sectionId: 's8',
         userId: ['u12', 'u13'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -144,7 +156,8 @@ const tasks = [
         projectId: 'p0',
         sectionId: 's1',
         userId: ['u14', 'u15'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -153,7 +166,8 @@ const tasks = [
         projectId: 'p1',
         sectionId: 's5',
         userId: ['u16', 'u17'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -162,7 +176,8 @@ const tasks = [
         projectId: 'p2',
         sectionId: 's8',
         userId: ['u18', 'u19'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -171,7 +186,8 @@ const tasks = [
         projectId: 'p0',
         sectionId: 's0',
         userId: ['u0', 'u1'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -180,7 +196,8 @@ const tasks = [
         projectId: 'p1',
         sectionId: 's4',
         userId: ['u2', 'u3'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: true,
     },
     {
@@ -189,7 +206,8 @@ const tasks = [
         projectId: 'p2',
         sectionId: 's8',
         userId: ['u4', 'u5'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -198,7 +216,8 @@ const tasks = [
         projectId: 'p0',
         sectionId: 's3',
         userId: ['u6', 'u7'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -207,7 +226,8 @@ const tasks = [
         projectId: 'p1',
         sectionId: 's6',
         userId: ['u8', 'u9'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -216,7 +236,8 @@ const tasks = [
         projectId: 'p2',
         sectionId: 's8',
         userId: ['u10', 'u11'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -225,7 +246,8 @@ const tasks = [
         projectId: 'p0',
         sectionId: 's2',
         userId: ['u12', 'u13'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -234,7 +256,8 @@ const tasks = [
         projectId: 'p1',
         sectionId: 's4',
         userId: ['u14', 'u15'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -243,7 +266,8 @@ const tasks = [
         projectId: 'p2',
         sectionId: 's8',
         userId: ['u16', 'u17'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -252,7 +276,8 @@ const tasks = [
         projectId: 'p0',
         sectionId: 's1',
         userId: ['u18', 'u19'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: true,
     },
     {
@@ -261,7 +286,8 @@ const tasks = [
         projectId: 'p1',
         sectionId: 's4',
         userId: ['u0', 'u1'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -270,7 +296,8 @@ const tasks = [
         projectId: 'p2',
         sectionId: 's8',
         userId: ['u2', 'u3'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: false,
     },
     {
@@ -279,7 +306,8 @@ const tasks = [
         projectId: 'p0',
         sectionId: 's0',
         userId: ['u4', 'u5'],
-        content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
+        content:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, voluptatibus.',
         isCompleted: true,
-    }
+    },
 ]
